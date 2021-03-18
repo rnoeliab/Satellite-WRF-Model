@@ -7,9 +7,21 @@ This project is create to work with satellite and model data. The programming la
 #### How to use?  
 * First you need install some libraries:
 ```
+conda install -c anaconda basemap
+conda install -c conda-forge pyhdf
+```
+* Then you can run the first lines of the script :
+```python
+import numpy as np
+from mpl_toolkits.basemap import Basemap
+from matplotlib import pyplot as plt
+from pyhdf.SD import SD, SDC
+from matplotlib.colors import BoundaryNorm
+from matplotlib.ticker import MaxNLocator
+import matplotlib.cm as cm
 
 ```
-* 
+* fddd
 ![Alt text](https://github.com/rnoeliab/Satellite-WRF-Model/blob/master/MODIS/AOD/figures/Figure%202021-03-18%20124501.png)
 
 ## OMI

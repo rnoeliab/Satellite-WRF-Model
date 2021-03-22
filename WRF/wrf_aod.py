@@ -23,21 +23,21 @@ from metpy.units import units
 
 
 
-wrf_file = sorted(glob("/data/noelia/modelo/wrf_chem_9/wrfout_d01_*"))  ## archivos wrfout
-output = "/data/noelia/modelo/plot_wrf_satelite/plot_wrf_aod/550/"
+wrf_file = sorted(glob(".../wrfout_d01_*"))  ## archivos wrfout
+output = "output path to save created files"
 
-ncfiles = [Dataset(x) for x in wrf_file]  ## leer todos los wrfout
+ncfiles = [Dataset(x) for x in wrf_file]  ## read the wrfout files
 #print ncfiles
 
-print("vientos")
+print("winds")
 wind = getvar(ncfiles, 'uvmet10_wspd_wdir', timeidx=ALL_TIMES, method='cat')
 ws = wind.sel(wspd_wdir='wspd')
 wd = wind.sel(wspd_wdir='wdir')
 ###############################################################################
-##################### cambiar de m/s para knots ###############################
+##################### change from m/s to knots ###############################
 ws10 = (ws.values*units('m/s')).to('knots')
 wd10 = wd.values*units.degree
-##################### calcular los componentes U y V ##########################
+##################### calculate the U and V components##########################
 u10,v10 = wind_components(ws10, wd10)
 
 tau1 = getvar(ncfiles, "TAUAER1", timeidx=ALL_TIMES, method='cat')   ### AOD in 300nm
@@ -76,15 +76,15 @@ levels = MaxNLocator(nbins=18).tick_values(0,np.nanmax(aod_550_col))
 cmap = cm.get_cmap("Spectral_r",lut=25)
 cmap.set_bad("w")
 norm = BoundaryNorm(levels, ncolors=cmap.N, clip=True)
-print("Ploteando")
+
+print("Plotting")
 for t in range(tau1.Time.shape[0]):
     print(t)   
+    
     fig = plt.figure(figsize=(15, 8))
     ax=plt.axes()
     m = Basemap(projection='cyl', resolution='h' ,llcrnrlat=lat.min(), urcrnrlat=lat.max(),
                 llcrnrlon=lon.min(), urcrnrlon=lon.max())                
-    # m = Basemap(projection='merc',llcrnrlat=lat.min(),urcrnrlat=lat.max(),\
-    #             llcrnrlon=lon.min(),urcrnrlon=lon.max(),lat_ts=-23.5,resolution='h')
     m.drawcoastlines(linewidth=1.5)
     m.drawstates(linewidth=1.5)
     m.drawparallels(np.arange(-90., 120., 1), labels=[1, 0, 0, 0],fontsize=15)
@@ -108,7 +108,7 @@ for t in range(tau1.Time.shape[0]):
     plt.show()
 #    plt.clf()
 
-####################### convertir png para gif ################################
+####################### convert png to gif ################################
 #filenames = ["formaldehido_"+str(i)+".png" for i in range(385)]
 #images = " ".join([output + filename for filename in filenames])
 #path = "/data/noelia/modelo/plot_gif/" 

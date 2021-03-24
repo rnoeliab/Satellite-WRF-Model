@@ -41,7 +41,7 @@ echo "Finished the download"
 ``` 
 * To run this script, do the following: In the terminal, write
 ```
-chmod +w download_MODIS.sh
+chmod +x download_MODIS.sh
 ./download_MODIS.sh
 ```
 

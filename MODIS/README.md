@@ -1,8 +1,13 @@
 ## MODIS
+
 ### 1. Read a MODIS image:
 * To read only a MODIS image you can use the [read_image.py](https://github.com/rnoeliab/Satellite-WRF-Model/blob/master/MODIS/AOD/read_modis.py) script. This script is a easy script.
-#### How to use?  
-* First you need install some libraries:
+
+#### How to use? 
+
+* First you need to have Anaconda 3 and python 3.6 or more installed on your computer! For that go to [Installing Anaconda](https://github.com/rnoeliab/Installing_anaconda)
+
+* Also, you need to install some libraries:
 ```
 conda install -c anaconda basemap
 conda install -c conda-forge pyhdf

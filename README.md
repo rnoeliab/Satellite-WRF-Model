@@ -47,3 +47,5 @@ chmod +x download_MODIS.sh
 
 
 ## OMI
+### How to get the MODIS data?
+In this part, we can start downloading the OMI data using the following link: [GES DISC](https://disc.gsfc.nasa.gov/datasets/).

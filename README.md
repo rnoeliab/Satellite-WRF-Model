@@ -47,5 +47,14 @@ chmod +x download_MODIS.sh
 
 
 ## OMI
-### How to get the MODIS data?
+### How to get the OMI data?
 In this part, we can start downloading the OMI data using the following link: [GES DISC](https://disc.gsfc.nasa.gov/datasets/).
+![Alt text](https://github.com/rnoeliab/Satellite-WRF-Model/blob/master/omi_website.png)
+
+
+
+
+
+
+
+

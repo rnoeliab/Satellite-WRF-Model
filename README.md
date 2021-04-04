@@ -58,7 +58,26 @@ For example:
 - On the right side we have an option "Data Access" and we click on "Subset/Get Data",
 - A window will open where we are going to choose the download method, define the date range, and the file format is "netCDF",
 - After selecting a date range, a window will open where a list of "netCDF" files will be chosen, we click on "Download links list",
-- 
+```
+wget for Linux
+* Make sure you have setup your Earthdata account.
+* Install wget if necessary.
+* Create a .netrc file in your home directory.
+```
+ cd ~ or cd $HOME
+ touch .netrc
+ echo "machine urs.earthdata.nasa.gov login <username> password <password>" >> .netrc   (without the brackets)
+ chmod 0600 .netrc (so only you can access it)
+```
+* Create a cookie file. This file will be used to persist sessions across calls to wget or curl.
+```
+ cd ~ or cd $HOME
+ touch .urs_cookies.
+ Note: you may need to re-create .urs_cookies in case you have already executed wget without valid authentication.
+```
+* To download multiple data files at once, enter the following command:
+```
+wget --load-cookies ~/.urs_cookies --save-cookies ~/.urs_cookies --auth-no-challenge=on --keep-session-cookies --content-disposition -i <url.txt>
 ```
 
 

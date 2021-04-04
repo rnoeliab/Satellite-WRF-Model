@@ -1,5 +1,6 @@
-OMI
-1. Read a OMI image:
+# OMI
+
+## 1. Read a OMI image:
 
 * To read only a OMI image you can use the read_image.py script. This script is a easy script.
 

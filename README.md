@@ -50,7 +50,16 @@ chmod +x download_MODIS.sh
 ### How to get the OMI data?
 In this part, we can start downloading the OMI data using the following link: [GES DISC](https://disc.gsfc.nasa.gov/datasets/).
 ![Alt text](https://github.com/rnoeliab/Satellite-WRF-Model/blob/master/omi_website.png)
-
+* On that page, depending on the product we want to study, we are going to select some points: 
+```
+For example:
+- we select the Aura-OMI satellite for the Nitrogen Dioxide variable,
+- we click on "OMI/Aura NO2 Tropospheric, Stratospheric & Total Columns MINDS Daily L3 Global Gridded 0.25 degree x 0.25 degree (OMI_MINDS_NO2d)",
+- On the right side we have an option "Data Access" and we click on "Subset/Get Data",
+- A window will open where we are going to choose the download method, define the date range, and the file format is "netCDF",
+- After selecting a date range, a window will open where a list of "netCDF" files will be chosen, we click on "Download links list",
+- 
+```
 
 
 

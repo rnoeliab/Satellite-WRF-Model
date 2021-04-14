@@ -16,7 +16,15 @@ with open('../DATA/SP/3K/2017_list_modis.txt', 'w') as f:
 conda create --name py37 python=3.7 matplotlib basemap gdal 
 conda activate py37
 ```
-
+* As we need to install some libraries, we are going to write the following command in the terminal:
+```
+ conda install -c anaconda netcdf4 
+ conda install -c anaconda xarray 
+ conda install -c conda-forge wrf-python 
+ conda install -c anaconda pandas 
+ conda install -c unidata metpy 
+```
+* Now, we can run this part of script:
 ```python
 from __future__ import print_function
 from glob import glob

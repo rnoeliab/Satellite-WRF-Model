@@ -25,7 +25,7 @@ from metpy.units import units
 #     for item in satellite_txt:
 #         f.write("%s\n" % item)
 
-f = open('../2017_list_modis.txt')
+f = open('../DATA/SP/3K/2017_list_modis.txt')
 satellite_txt = f.readlines()
 
 wrf_file = sorted(glob("../wrfout_d02_*"))  # archivos wrfout

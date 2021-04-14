@@ -11,6 +11,25 @@ with open('../DATA/SP/3K/2017_list_modis.txt', 'w') as f:
 ## Extract the AOD data from the WRF-Chem model 
 * The next step would be to identify the start and end date of our comparison, in this case, both the "hdf" files and the outputs of the WRF-Chem model must match the start and end date. 
 * Now we are going to explain script [1.Extract_aod_wrf_to_nc.py](https://github.com/rnoeliab/Satellite-WRF-Model/blob/master/MODIS/AOD/WRF-Chem_Modis/1.Extract_aod_wrf_to_nc.py) a bit:
+* Install the libraries we need. For that, we first need to have created a project through anaconda (see [Installing_anaconda](https://github.com/rnoeliab/Installing_anaconda)):
+```
+conda create --name py37 python=3.7 matplotlib basemap gdal 
+conda activate py37
+```
+
+```python
+from __future__ import print_function
+from glob import glob
+from netCDF4 import Dataset
+import xarray as xr
+from wrf import to_np, getvar, ALL_TIMES
+import numpy as np
+from datetime import datetime
+import pandas as pd
+from metpy.calc import wind_components
+from metpy.units import units
+```
+
 ```python
 f = open('../DATA/SP/3K/2017_list_modis.txt')
 satellite_txt = f.readlines()

@@ -15,7 +15,7 @@ import calendar
 
 dire_mod = '../DATA/SP/3K/2017/'
 dire_wrf = '../DATA/'
-input_mod = open(dire_wrf+'june_list_mod_wrf.txt').readlines()
+input_mod = open(dire_wrf+'list_mod_wrf.txt').readlines()
 output = "..s/DATA/SP/regridded_2017/"
 
 ds_disk = xr.open_dataarray(dire_wrf+"june_aod.avg.column.550_p2.nc")

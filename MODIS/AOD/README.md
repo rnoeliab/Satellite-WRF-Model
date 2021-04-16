@@ -158,17 +158,19 @@ da.to_netcdf(output+"june_aod.avg.column.550_p1.nc")
 
 ## Regridding the AOD data from the MODIS sensor to the same resolution as the WRF-Chem model 
 * After extracting the variable of interest in a "netCDF" format, we are going to read it and regridding it to the same resolution as the MODIS sensor.
-* For that, you need to install a "xesmf" library: 
+* Therefore, you need to install a "xesmf" library: 
 ```
  conda install -c conda-forge xesmf 
 ```
-* 
-
-
+* Later, you can run these libraries on the spyder platform: 
 ```python
 import os
 import gdal
+import time
+import calendar
 import numpy as np
+import xesmf as xe
+import xarray as xr
 from PIL import Image
 from matplotlib import pyplot as plt
 from mpl_toolkits.basemap import Basemap
@@ -176,16 +178,16 @@ from matplotlib.colors import BoundaryNorm
 import matplotlib.cm as cm
 from matplotlib.ticker import MaxNLocator
 from matplotlib.patches import Polygon
-import xesmf as xe
-import time
-import xarray as xr
-import calendar
-
+```
+* Now, we are going to read the directories where the data of the WRF-Chem model and the MODIS sensor are located. 
+```python
 dire_mod = '../DATA/SP/3K/2017/'
 dire_wrf = '../DATA/'
 input_mod = open(dire_wrf+'list_mod_wrf.txt').readlines()
 output = "..s/DATA/SP/regridded_2017/"
-
+```
+* Then, we are going to read the data from the WRF-Chem model and organize it properly:
+```python
 ds_disk = xr.open_dataarray(dire_wrf+"june_aod.avg.column.550_p2.nc")
 ds = xr.DataArray(
     data=ds_disk.variable.values[0],
@@ -193,7 +195,9 @@ ds = xr.DataArray(
     coords = dict(
         lon = (["y","x"],ds_disk.XLONG.values),
         lat = (["y","x"],ds_disk.XLAT.values),),)  
-
+```
+* We are going to find the vertices of the area of interest that the WRF-Chem model provides us to be able to project it on the data from the MODIS sensor.
+```python
 x00,x01 = ds_disk.XLONG.values[0,0],ds_disk.XLONG.values[0,-1]
 x10,x11 = ds_disk.XLONG.values[-1,0],ds_disk.XLONG.values[-1,-1]
 y00,y01 = ds_disk.XLAT.values[-1,0],ds_disk.XLAT.values[-1,-1]
@@ -203,7 +207,6 @@ def find_nearest_x(longitude, point_x):
     longitude = np.asarray(longitude)
     idx = (np.abs(longitude - point_x)).argmin()
     return idx
-
 
 def find_nearest_y(latitude, point_y):
     latitude = np.asarray(latitude)

@@ -196,36 +196,9 @@ ds = xr.DataArray(
         lon = (["y","x"],ds_disk.XLONG.values),
         lat = (["y","x"],ds_disk.XLAT.values),),)  
 ```
-* We are going to find the vertices of the area of interest that the WRF-Chem model provides us to be able to project it on the data from the MODIS sensor.
+* And read the data from MODIS sensor. "var_name" means the name of the variable of interest.
+* This command "os.system ('gdalwarp -of GTIFF -tps -t_srs EPSG: 4326 HDF4_EOS: EOS_SWATH:" {0} ": {1} teste.hdf'.format (FILE_NAME, var_name))" is used to reproject the MODIS sensor dice from sinusoidal to Cartesian. 
 ```python
-x00,x01 = ds_disk.XLONG.values[0,0],ds_disk.XLONG.values[0,-1]
-x10,x11 = ds_disk.XLONG.values[-1,0],ds_disk.XLONG.values[-1,-1]
-y00,y01 = ds_disk.XLAT.values[-1,0],ds_disk.XLAT.values[-1,-1]
-y10,y11 = ds_disk.XLAT.values[0,0],ds_disk.XLAT.values[0,-1]
-
-def find_nearest_x(longitude, point_x):
-    longitude = np.asarray(longitude)
-    idx = (np.abs(longitude - point_x)).argmin()
-    return idx
-
-def find_nearest_y(latitude, point_y):
-    latitude = np.asarray(latitude)
-    dist = (np.abs(latitude - point_y))
-    idy = np.where(dist ==dist.min())[0][1]
-    return idy
-
-################### AREA STUDY
-x0 = -49.0
-x1 = -44.0
-y0 = -21.0
-y1 = -26.0
-################    
-            
-levels = MaxNLocator(nbins=18).tick_values(0,1.2)
-cmap = cm.get_cmap("Spectral_r",lut=25)
-cmap.set_bad("w")
-norm = BoundaryNorm(levels, ncolors=cmap.N, clip=True)
-
 var_name = 'mod04:Optical_Depth_Land_And_Ocean'
 for enu,n in enumerate(input_mod):
     FILE_NAME = dire_mod+n.rstrip()
@@ -265,6 +238,27 @@ for enu,n in enumerate(input_mod):
 #        data = np.ma.masked_array(data, np.isnan(data))
         data_f = data * scale_factor
         os.remove(OUT+os.sep+'teste.hdf')
+```
+*
+```python
+
+################### AREA STUDY
+x0 = -49.0
+x1 = -44.0
+y0 = -21.0
+y1 = -26.0
+################    
+def find_nearest_x(longitude, point_x):
+    longitude = np.asarray(longitude)
+    idx = (np.abs(longitude - point_x)).argmin()
+    return idx
+
+def find_nearest_y(latitude, point_y):
+    latitude = np.asarray(latitude)
+    dist = (np.abs(latitude - point_y))
+    idy = np.where(dist ==dist.min())[0][1]
+    return idy
+
 
         if ((y0 > miny and y0 < maxy) or (y1 > miny and y1 < maxy)):
             if ((x0 > minx and x0 < maxx) or (x1 > minx and x1 < maxx)):
@@ -301,8 +295,10 @@ for enu,n in enumerate(input_mod):
                         dims = ("y","x"),
                         coords = dict(
                             lon = (["y","x"],x),
-                            lat = (["y","x"],y),),)                
-                      
+                            lat = (["y","x"],y),),)  
+```
+*
+```python
                     regridder = xe.Regridder(da, ds, 'nearest_s2d')
                     regridder.clean_weight_file()
                     print(regridder)
@@ -324,53 +320,5 @@ for enu,n in enumerate(input_mod):
                             ),)
                     df.to_netcdf(output+str(file_names)+"_regrid.nc")
 
-                    # fig = plt.figure(figsize=(22, 11))
-                    # rect = fig.patch
-                    # rect.set_facecolor('lightgoldenrodyellow')
-                    # ax0 = fig.add_subplot(111, frame_on=False)
-                    # ax0.set_xticks([])
-                    # ax0.set_yticks([])
-                    # ax = fig.add_subplot(121)
-                    # for axis in ['top','bottom','left','right']:
-                    #     ax.spines[axis].set_linewidth(3.0)
-                    # m = Basemap(projection='cyl', resolution='h', llcrnrlat=-26.0, urcrnrlat=-21.0,
-                    #             llcrnrlon=-49.0, urcrnrlon=-44.0)
-                    # m.drawcoastlines(linewidth=1.5)
-                    # m.drawstates(linewidth=1.5)    
-                    # m.drawparallels(np.arange(-90., 120., 2), labels=[1, 0, 0, 0],fontsize=18)
-                    # m.drawmeridians(np.arange(-180., 181., 2), labels=[0, 0, 0, 1],fontsize=18) 
-                    # trend=m.pcolormesh(x, y, data_final, cmap=cmap, norm = norm)
-                    # poly = Polygon([m(x00,y00),m(x01,y01),m(x11,y11),m(x10,y10)],facecolor='none',edgecolor='red',linewidth=5)
-                    # plt.gca().add_patch(poly)       	           
-                    # ax.set_title("Sao Paulo Metropolitan Region" + '\n' +
-                    #               "AOD  from satellite "+'\n'+ 
-                    #               "for "+ str(time_local)+ " (Local Time)", fontsize=20)
-                    
-                    # ax = fig.add_subplot(122)
-                    # for axis in ['top','bottom','left','right']:
-                    #     ax.spines[axis].set_linewidth(3.0)
-                    # m = Basemap(projection='cyl', resolution='h', llcrnrlat=-25.2, urcrnrlat=-21.5,
-                    #             llcrnrlon=-49.0, urcrnrlon=-44.3)
-                    # m.drawcoastlines(linewidth=1.5)
-                    # m.drawstates(linewidth=1.5)    
-                    # m.drawparallels(np.arange(-90., 120., 1), labels=[1, 0, 0, 0],fontsize=18)
-                    # m.drawmeridians(np.arange(-180., 181., 1), labels=[0, 0, 0, 1],fontsize=18) 
-                    # x2,y2 = ds_disk.XLONG.values,ds_disk.XLAT.values
-                    # trend2 = m.pcolormesh(x2,y2, data_out, cmap=cmap, norm = norm)
-                    # poly = Polygon([m(x00,y00),m(x01,y01),m(x11,y11),m(x10,y10)],facecolor='none',edgecolor='red',linewidth=5)
-                    # plt.gca().add_patch(poly)       	           
-                
-                    # cbar = m.colorbar(trend, location='right', pad="5%", ticks=levels)
-                    # cbar.set_label('None', fontsize=19)
-                    
-                    # ax.set_title("Sao Paulo Metropolitan Region" + '\n' +
-                    #               "AOD  from Regridded satellite "+'\n'+ 
-                    #               "for "+ str(time_local)+ " (Local Time)", fontsize=20)
-                    
-                    # plt.show()
 ```
-
-
-
-
 

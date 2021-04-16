@@ -198,6 +198,9 @@ ds = xr.DataArray(
 ```
 * And read the data from MODIS sensor. "var_name" means the name of the variable of interest.
 * This command "os.system ('gdalwarp -of GTIFF -tps -t_srs EPSG: 4326 HDF4_EOS: EOS_SWATH:" {0} ": {1} teste.hdf'.format (FILE_NAME, var_name))" is used to reproject the MODIS sensor dice from sinusoidal to Cartesian. 
+* But this command is not run by itself since first all the information of each "hdf" is saved for a "teste.hdf", it is found out where it was saved using the command "os.getcwd ()", then the file is opened "teste.hdf",  read with "gdal.open", the metadata is obtained, the dimensions with "gc.RasterXSize and gc.RasterYSize" and if the saved file has a dimension less than 1000, then it will be reprojected.
+* 
+* 
 ```python
 var_name = 'mod04:Optical_Depth_Land_And_Ocean'
 for enu,n in enumerate(input_mod):

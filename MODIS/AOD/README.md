@@ -360,3 +360,4 @@ dat_wrf_a = np.nanmean(dat_wrf_a_day,axis=0)
 basemod.plot_map_month(output,dat_mod_a,dat_wrf_a,lat,lon,"Aqua","100",len(dat_mod_a_day))
 
 ![Alt text](https://github.com/rnoeliab/Satellite-WRF-Model/blob/master/MODIS/AOD/figures/2017_06_04_Terra.png)
+

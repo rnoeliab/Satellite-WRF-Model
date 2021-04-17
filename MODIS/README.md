@@ -101,5 +101,5 @@ plt.show()
 ```
 * This script show the following image:
 
-![Alt text](https://github.com/rnoeliab/Satellite-WRF-Model/blob/master/MODIS/AOD/figures/2017_06_04_Terra.png)
+![Alt text](https://github.com/rnoeliab/Satellite-WRF-Model/blob/master/MODIS/AOD/figures/Figure%202021-03-18%20124501.png)
 

@@ -157,7 +157,7 @@ da.to_netcdf(output+"june_aod.avg.column.550_p1.nc")
 ```
 
 ## Regridding the AOD data from the MODIS sensor to the same resolution as the WRF-Chem model 
-* After extracting the variable of interest in a "netCDF" format, we are going to read it and regridding it to the same resolution as the MODIS sensor.
+* After extracting the variable of interest in a "netCDF" format, we are going to read it and regridding it to the same resolution as the MODIS sensor [2.Regridding_modis_wrf_aod.py](https://github.com/rnoeliab/Satellite-WRF-Model/blob/master/MODIS/AOD/WRF-Chem_Modis/2.Regridding_modis_wrf_aod.py).
 * Therefore, you need to install a "xesmf" library: 
 ```
  conda install -c conda-forge xesmf 
@@ -278,12 +278,12 @@ time_local = time.strftime('%Y-%m-%d %H:%M:%S', aa)
 ```
 * Finally, the necessary data is saved: Data, latitude and longitude.
 ```python
-          da = xr.DataArray(
-              data=data_final,
-              dims = ("y","x"),
-              coords = dict(
-                  lon = (["y","x"],x),
-                  lat = (["y","x"],y),),)  
+da = xr.DataArray(
+    data=data_final,
+    dims = ("y","x"),
+    coords = dict(
+        lon = (["y","x"],x),
+        lat = (["y","x"],y),),)  
 ```
 * And regridding the Data and save it in a "netCDF" format:
 ```python
@@ -307,6 +307,56 @@ df = xr.DataArray(
         time_units = 'Local Time'
         ),)
 df.to_netcdf(output+str(file_names)+"_regrid.nc")
-
 ```
+## Comparing the model WRF-Chem with the MODIS sensor
+* The last step would be to compare the regridded data from the WRF-Chem model with the data from the MODIS sensor.
+* To run the [3.TandA_wrf_compared.py](https://github.com/rnoeliab/Satellite-WRF-Model/blob/master/MODIS/AOD/WRF-Chem_Modis/3.TandA_wrf_compared.py) script, it is necessary to run script [basemap_modis.py](https://github.com/rnoeliab/Satellite-WRF-Model/blob/master/MODIS/AOD/WRF-Chem_Modis/basemap_modis.py) first.
 
+```python
+dire_mod = "../DATA/SP/regridded_2017/"
+dire_wrf = '../DATA/'
+output = "../results/plot_wrf_modis/"
+
+########################### READ WRF IMAGES ###############################
+ds_disk = xr.open_dataset(dire_wrf+"june_aod.avg.column.550_p2.nc")
+aod_wrf = ds_disk["aod_055"].values
+.
+.
+.
+########################### READ MODIS IMAGES #############################
+files1 = sorted(glob.glob(dire_mod+"*_regrid.nc"))  ## archivos wrfout
+for i in range(len(files1)):
+    if i == (len(files1)-1):
+        break;      
+    else:
+        if files1[i][-50:-33] == files1[i+1][-50:-33]:  #### to the same time
+            listdirr.append(files1[i])          
+            if i == (len(files1)-2):
+                listdirr.append(files1[len(files1)-1])
+                mylist.append(listdirr)               
+        else:
+            listdirr.append(files1[i])
+            mylist.append(listdirr)
+            listdirr = []
+.
+.
+.                        
+########################### TERRA Y AQUA ################################      
+######################## mean by periodo ################################
+for n in range(len(dat_mod_t_day)):    
+    if type(dat_mod_t_day[n]) != np.ndarray:
+        del dat_mod_t_day[n]
+        del dat_wrf_t_day[n]
+for n in range(len(dat_mod_a_day)):  
+    if type(dat_mod_a_day[n]) != np.ndarray:
+        del dat_mod_a_day[n]
+        del dat_wrf_a_day[n]
+dat_mod_t = np.nanmean(dat_mod_t_day,axis=0)
+dat_wrf_t = np.nanmean(dat_wrf_t_day,axis=0)
+basemod.plot_map_month(output,dat_mod_t,dat_wrf_t,lat,lon,"Terra","100",len(dat_mod_t_day))
+
+dat_mod_a = np.nanmean(dat_mod_a_day,axis=0)
+dat_wrf_a = np.nanmean(dat_wrf_a_day,axis=0)
+basemod.plot_map_month(output,dat_mod_a,dat_wrf_a,lat,lon,"Aqua","100",len(dat_mod_a_day))
+
+![Alt text](https://github.com/rnoeliab/Satellite-WRF-Model/blob/master/MODIS/AOD/figures/2017_06_04_Terra.png)

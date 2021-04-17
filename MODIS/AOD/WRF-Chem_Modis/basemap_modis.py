@@ -33,7 +33,7 @@ def plot_map_month(output,dat_mod,dat_wrf,lat,lon,satelite,p,n):
     m.drawstates(linewidth=1.5)    
     m.drawparallels(np.arange(-90., 120., 1), labels=[1, 0, 0, 0],fontsize=20)
     m.drawmeridians(np.arange(-180., 181., 1), labels=[0, 0, 0, 1],fontsize=20) 
-    m.readshapefile('/media/noelia/TOSHIBA EXT/doctorado/usp/shapefile/RM_Sao_Paulo/transformed','sp')
+    m.readshapefile('../shapefile/RM_Sao_Paulo/transformed','sp')
     trend=m.pcolormesh(lon, lat, dat_wrf, cmap=cmap, norm = norm)
     ax.set_title("Sao Paulo Metropolitan Region" + '\n' +
                   "AOD  from WRF model "+'\n'+ 
@@ -48,7 +48,7 @@ def plot_map_month(output,dat_mod,dat_wrf,lat,lon,satelite,p,n):
     m.drawstates(linewidth=1.5)    
     m.drawparallels(np.arange(-90., 120., 1), labels=[1, 0, 0, 0],fontsize=20)
     m.drawmeridians(np.arange(-180., 181., 1), labels=[0, 0, 0, 1],fontsize=20) 
-    m.readshapefile('/media/noelia/TOSHIBA EXT/doctorado/usp/shapefile/RM_Sao_Paulo/transformed','sp')
+    m.readshapefile('../shapefile/RM_Sao_Paulo/transformed','sp')
     trend2 = m.pcolormesh(lon,lat, dat_mod, cmap=cmap, norm = norm)            
     cbar = m.colorbar(trend, location='right', pad="5%", ticks=levels)
     cbar.set_label('None', fontsize=19)
@@ -75,7 +75,7 @@ def plot_map_day(output,dat_mod,dat_wrf,lat,lon,time,satelite):
     m.drawstates(linewidth=1.5)    
     m.drawparallels(np.arange(-90., 120., 1), labels=[1, 0, 0, 0],fontsize=20)
     m.drawmeridians(np.arange(-180., 181., 1), labels=[0, 0, 0, 1],fontsize=20) 
-    m.readshapefile('/media/noelia/TOSHIBA EXT/doctorado/usp/shapefile/RM_Sao_Paulo/transformed','sp')
+    m.readshapefile('../shapefile/RM_Sao_Paulo/transformed','sp')
     trend=m.pcolormesh(lon, lat, dat_wrf, cmap=cmap, norm = norm)
     ax.set_title("Sao Paulo Metropolitan Region" + '\n' +
                   "AOD  from WRF model "+'\n'+ 
@@ -90,7 +90,7 @@ def plot_map_day(output,dat_mod,dat_wrf,lat,lon,time,satelite):
     m.drawstates(linewidth=1.5)    
     m.drawparallels(np.arange(-90., 120., 1), labels=[1, 0, 0, 0],fontsize=20)
     m.drawmeridians(np.arange(-180., 181., 1), labels=[0, 0, 0, 1],fontsize=20) 
-    m.readshapefile('/media/noelia/TOSHIBA EXT/doctorado/usp/shapefile/RM_Sao_Paulo/transformed','sp')
+    m.readshapefile('../shapefile/RM_Sao_Paulo/transformed','sp')
     trend2 = m.pcolormesh(lon,lat, dat_mod, cmap=cmap, norm = norm)            
     cbar = m.colorbar(trend, location='right', pad="5%", ticks=levels)
     cbar.set_label('None', fontsize=19)

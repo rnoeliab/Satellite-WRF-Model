@@ -311,7 +311,6 @@ df.to_netcdf(output+str(file_names)+"_regrid.nc")
 ## Comparing the model WRF-Chem with the MODIS sensor
 * The last step would be to compare the regridded data from the WRF-Chem model with the data from the MODIS sensor.
 * To run the [3.TandA_wrf_compared.py](https://github.com/rnoeliab/Satellite-WRF-Model/blob/master/MODIS/AOD/WRF-Chem_Modis/3.TandA_wrf_compared.py) script, it is necessary to run script [basemap_modis.py](https://github.com/rnoeliab/Satellite-WRF-Model/blob/master/MODIS/AOD/WRF-Chem_Modis/basemap_modis.py) first.
-
 ```python
 dire_mod = "../DATA/SP/regridded_2017/"
 dire_wrf = '../DATA/'
@@ -358,6 +357,6 @@ basemod.plot_map_month(output,dat_mod_t,dat_wrf_t,lat,lon,"Terra","100",len(dat_
 dat_mod_a = np.nanmean(dat_mod_a_day,axis=0)
 dat_wrf_a = np.nanmean(dat_wrf_a_day,axis=0)
 basemod.plot_map_month(output,dat_mod_a,dat_wrf_a,lat,lon,"Aqua","100",len(dat_mod_a_day))
-
-![Alt text](https://github.com/rnoeliab/Satellite-WRF-Model/blob/master/MODIS/AOD/figures/Figure%202021-03-18%20124501.png)
+```
+![Alt text](https://github.com/rnoeliab/Satellite-WRF-Model/blob/master/MODIS/AOD/figures/2017_06_04_Terra.png)
 

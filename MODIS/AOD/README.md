@@ -196,11 +196,8 @@ ds = xr.DataArray(
         lon = (["y","x"],ds_disk.XLONG.values),
         lat = (["y","x"],ds_disk.XLAT.values),),)  
 ```
-* And read the data from MODIS sensor. "var_name" means the name of the variable of interest.
-* This command "os.system ('gdalwarp -of GTIFF -tps -t_srs EPSG: 4326 HDF4_EOS: EOS_SWATH:" {0} ": {1} teste.hdf'.format (FILE_NAME, var_name))" is used to reproject the MODIS sensor dice from sinusoidal to Cartesian. 
-* But this command is not run by itself since first all the information of each "hdf" is saved for a "teste.hdf", it is found out where it was saved using the command "os.getcwd ()", then the file is opened "teste.hdf",  read with "gdal.open", the metadata is obtained, the dimensions with "gc.RasterXSize and gc.RasterYSize" and if the saved file has a dimension less than 1000, then it will be reprojected.
-* 
-* 
+* And read the data from MODIS sensor. The "var_name = mod04:Optical_Depth_Land_And_Ocean" means the name of the variable of interest.
+* From command "os.system ('gdalwarp -of GTIFF -tps -t_srs EPSG: 4326 HDF4_EOS: EOS_SWATH:" {0} ": {1} teste.hdf'.format (FILE_NAME, var_name))" to "im1 = Image.open(OUT+os.sep+'teste.hdf')" is used to reproject the MODIS sensor dice from sinusoidal to Cartesian. 
 ```python
 var_name = 'mod04:Optical_Depth_Land_And_Ocean'
 for enu,n in enumerate(input_mod):
@@ -213,7 +210,7 @@ for enu,n in enumerate(input_mod):
     metadata = gc.GetMetadata()
     width = gc.RasterXSize
     height = gc.RasterYSize 
-                       
+    
     if width <= 1000 and height <=1000:
         print(width, height)
         gt = gc.GetGeoTransform()
@@ -236,15 +233,9 @@ for enu,n in enumerate(input_mod):
         im1 = Image.open(OUT+os.sep+'teste.hdf')
         im1 = np.array(im1)
         data = np.float64(im1)            
-        data[data == fv] = np.nan
-        data[data <= 0.0] = np.nan
-#        data = np.ma.masked_array(data, np.isnan(data))
-        data_f = data * scale_factor
-        os.remove(OUT+os.sep+'teste.hdf')
 ```
-*
+* After reprojecting the MODIS sensor data, we will select only the data for our area of interest: 
 ```python
-
 ################### AREA STUDY
 x0 = -49.0
 x1 = -44.0
@@ -262,66 +253,60 @@ def find_nearest_y(latitude, point_y):
     idy = np.where(dist ==dist.min())[0][1]
     return idy
 
+if ((y0 > miny and y0 < maxy) or (y1 > miny and y1 < maxy)):
+  if ((x0 > minx and x0 < maxx) or (x1 > minx and x1 < maxx)):
+      posx0 = find_nearest_x(x,x0)
+      posx1 = find_nearest_x(x,x1)
+      posy0 = find_nearest_y(y,y0)
+      posy1 = find_nearest_y(y,y1)
 
-        if ((y0 > miny and y0 < maxy) or (y1 > miny and y1 < maxy)):
-            if ((x0 > minx and x0 < maxx) or (x1 > minx and x1 < maxx)):
-                posx0 = find_nearest_x(x,x0)
-                posx1 = find_nearest_x(x,x1)
-                posy0 = find_nearest_y(y,y0)
-                posy1 = find_nearest_y(y,y1)
-                
-                y = y[posy0:posy1+1,posx0:posx1+1]
-                x = x[posy0:posy1+1,posx0:posx1+1]
-                
-                data_final = data_f[posy0:posy1+1,posx0:posx1+1]
-#                data_final[data_f <= 0.000001] = np.nan
-                # mask = np.ma.getmask(data_final)
-                a,b = data_final.shape
-                print(a,b)
-#                    print data_final.shape
-#                    print data_final.max(), data_final.min()  
-                if a<=1 or b<=1:
-                    print("Area muy pequena")
-                    continue 
-                if  np.nansum(data_final) != 0.0:
-                    file_names = FILE_NAME[-44:-4]
-                    print(file_names)
-                    date = metadata['RANGEBEGINNINGDATE']
-                    times = metadata['RANGEBEGINNINGTIME'][0:8]
-                    time_tuple = time.strptime(date+' '+times, "%Y-%m-%d %H:%M:%S")
-                    t = calendar.timegm(time_tuple)
-                    aa = time.localtime(t)
-                    time_local = time.strftime('%Y-%m-%d %H:%M:%S', aa)
-    
-                    da = xr.DataArray(
-                        data=data_final,
-                        dims = ("y","x"),
-                        coords = dict(
-                            lon = (["y","x"],x),
-                            lat = (["y","x"],y),),)  
+      y = y[posy0:posy1+1,posx0:posx1+1]
+      x = x[posy0:posy1+1,posx0:posx1+1]
+
+      data_final = data_f[posy0:posy1+1,posx0:posx1+1]
+      a,b = data_final.shape
+      print(a,b)
 ```
-*
+* The next step would be to convert UTC time to local time with the command "time.localtime ()":
 ```python
-                    regridder = xe.Regridder(da, ds, 'nearest_s2d')
-                    regridder.clean_weight_file()
-                    print(regridder)
+date = metadata['RANGEBEGINNINGDATE']
+times = metadata['RANGEBEGINNINGTIME'][0:8]
+time_tuple = time.strptime(date+' '+times, "%Y-%m-%d %H:%M:%S")
+t = calendar.timegm(time_tuple)
+aa = time.localtime(t)
+time_local = time.strftime('%Y-%m-%d %H:%M:%S', aa)
+```
+* Finally, the necessary data is saved: Data, latitude and longitude.
+```python
+          da = xr.DataArray(
+              data=data_final,
+              dims = ("y","x"),
+              coords = dict(
+                  lon = (["y","x"],x),
+                  lat = (["y","x"],y),),)  
+```
+* And regridding the Data and save it in a "netCDF" format:
+```python
+regridder = xe.Regridder(da, ds, 'nearest_s2d')
+regridder.clean_weight_file()
+print(regridder)
 
-                    data_out = regridder(da.values) 
+data_out = regridder(da.values) 
 
-                    df = xr.DataArray(
-                        data=data_out,
-                        dims = ('y', 'x'),
-                        coords = dict(
-                            lon = (['y', 'x'], ds_disk.XLONG.values),
-                            lat = (['y', 'x'], ds_disk.XLAT.values),
-                            ),
-                        attrs = dict(
-                            description = '550nm optical thickness',
-                            units = 'None',
-                            time = str(time_local),
-                            time_units = 'Local Time'
-                            ),)
-                    df.to_netcdf(output+str(file_names)+"_regrid.nc")
+df = xr.DataArray(
+    data=data_out,
+    dims = ('y', 'x'),
+    coords = dict(
+        lon = (['y', 'x'], ds_disk.XLONG.values),
+        lat = (['y', 'x'], ds_disk.XLAT.values),
+        ),
+    attrs = dict(
+        description = '550nm optical thickness',
+        units = 'None',
+        time = str(time_local),
+        time_units = 'Local Time'
+        ),)
+df.to_netcdf(output+str(file_names)+"_regrid.nc")
 
 ```
 

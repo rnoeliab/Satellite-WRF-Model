@@ -79,6 +79,10 @@ wget for Linux
 ```
 wget --load-cookies ~/.urs_cookies --save-cookies ~/.urs_cookies --auth-no-challenge=on --keep-session-cookies --content-disposition -i <url.txt>
 ```
+## GPM
+In this part, we can start downloading the GPM data using the following link: [GPM-INMERG](https://disc.gsfc.nasa.gov/datasets/GPM_3IMERGDL_06/summary/).
+
+
 
 
 
